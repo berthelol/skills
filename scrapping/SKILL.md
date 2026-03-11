@@ -9,6 +9,15 @@ description: >
   users say "scrape", "monitor", "search", or "check" a platform. Do NOT trigger for building apps, using
   official platform SDKs/APIs (like PRAW, tweepy, YouTube Data API), analyzing local files, or creating
   dashboards — only when the user needs to retrieve data directly from a social platform.
+metadata:
+  openclaw:
+    requires:
+      env:
+        - SCRAPECREATORS_API_KEY
+      bins:
+        - curl
+        - jq
+    primaryEnv: SCRAPECREATORS_API_KEY
 ---
 
 # ScrapeCreators API

@@ -70,8 +70,6 @@ GET /v1/truthsocial/user/posts?handle={username}
 ```
 Get a user's Truth Social posts. Pass `user_id` instead of `handle` for faster responses.
 
-There is also a webhook integration for real-time alerts on specific user posts.
-
 ## Google
 
 Base path: `/v1/google`
