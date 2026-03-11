@@ -1,5 +1,5 @@
 ---
-name: scrapecreators
+name: scrapping
 description: >
   Use this skill whenever a user wants to get, pull, grab, fetch, or look up public data from social media
   platforms — profiles, posts, videos, comments, followers, engagement stats, transcripts, trending content,
