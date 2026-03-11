@@ -27,7 +27,7 @@ x-api-key: YOUR_API_KEY
 
 Get your key at https://scrapecreators.com (100 free credits on signup, no card required).
 
-Store the key in an environment variable so it stays out of scripts:
+Store the key in an environment variable so it stays out of scripts and doesn't end up in version control or chat history:
 
 ```bash
 export SCRAPECREATORS_API_KEY="your-key-here"
@@ -62,10 +62,10 @@ These work across most endpoints:
 
 | Parameter | Description |
 |-----------|-------------|
-| `trim=true` | Returns a trimmed, smaller response — useful when you only need key fields |
-| `cursor` | Pagination cursor returned in previous response — pass it to get the next page |
-| `includeExtras=true` | Returns additional fields (like counts, descriptions) on YouTube endpoints |
-| `sort_by` | Sort results — values depend on endpoint (e.g., `popular`, `relevance`, `impressions`, `recency`) |
+| `trim=true` | Returns a trimmed, smaller response — keeps context window manageable and saves tokens when you only need key fields like names, stats, and IDs |
+| `cursor` | Pagination cursor returned in previous response — pass it to get the next page. Each page costs 1 credit, so only paginate if the user needs more results |
+| `includeExtras=true` | Returns additional fields (like counts, descriptions) on YouTube endpoints — without this, channel-videos only returns titles and IDs |
+| `sort_by` | Sort results — values depend on endpoint (e.g., `popular`, `relevance`, `total_impressions`, `recency`). Check the platform reference for valid values per endpoint, since passing an invalid value returns a 400 error |
 
 ## Pagination
 
@@ -112,11 +112,11 @@ curl -s "https://api.scrapecreators.com/v1/{platform}/{endpoint}?{params}" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY"
 ```
 
-Pipe through `jq` to format the JSON, or through `jq '.some.field'` to extract specific data.
+Pipe through `jq` to format the JSON, or through `jq '.some.field'` to extract specific data. Using `jq` is important because raw API responses are often large nested JSON — extracting just the fields the user needs makes the output readable and keeps your context window clean.
 
 ### Chaining requests
 
-A common pattern is to fetch a profile, then drill into their content:
+A common pattern is to fetch a profile first (to confirm the account exists and get IDs), then drill into their content:
 
 ```bash
 # 1. Get profile
@@ -209,12 +209,12 @@ curl -s -o response.json -w "%{http_code}" \
 When the user describes what they need, match it to the right platform and endpoint:
 
 - **"Get info about a creator/account"** → `/{platform}/profile`
-- **"Get their posts/videos/content"** → `/{platform}/profile/videos` (TikTok) or `/{platform}/channel-videos` (YouTube) or `/{platform}/user-posts` (others)
+- **"Get their posts/videos/content"** → `/{platform}/profile/videos` (TikTok) or `/{platform}/channel-videos` (YouTube) or `/{platform}/user/posts` (Instagram) or `/{platform}/posts` (Facebook)
 - **"Get comments on a post"** → `/{platform}/video/comments` or `/{platform}/post/comments`
-- **"Search for content about X"** → `/{platform}/search`
-- **"Get the transcript of a video"** → `/{platform}/video/transcript` or dedicated transcript endpoint
+- **"Search for content about X"** → `/{platform}/search/keyword` (TikTok) or `/{platform}/search` (others)
+- **"Get the transcript of a video"** → `/{platform}/video/transcript` (TikTok/YouTube) or `/v2/instagram/media/transcript` (Instagram) or `/facebook/transcript` (Facebook)
 - **"Who follows them / who do they follow"** → `/{platform}/user/followers` or `/following`
-- **"What's trending"** → `/tiktok/videos/popular`, `/tiktok/trending`, `/tiktok/hashtags/popular`
+- **"What's trending"** → `/tiktok/videos/popular`, `/tiktok/get-trending-feed`, `/tiktok/hashtags/popular`
 - **"Find ads by a company"** → `/facebook/adLibrary/search/ads`, `/linkedin/ads/search`, `/google/company/ads`, or `/reddit/ads/search`
 - **"Get product details from TikTok Shop"** → `/tiktok/product`, `/tiktok/shop/search`
 

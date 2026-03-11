@@ -20,7 +20,7 @@ Public channel data: subscriber count, video count, description, avatar.
 ```
 GET /v1/youtube/channel-videos?handle={username}&cursor={cursor}&includeExtras=true
 ```
-Paginated list of a channel's videos. Pass `includeExtras=true` to get like/comment counts and descriptions.
+Paginated list of a channel's videos. Pass `includeExtras=true` to get like/comment counts and descriptions — without it, you only get titles and video IDs, which is rarely enough for analysis.
 
 ### Channel Shorts
 ```
@@ -32,7 +32,7 @@ Paginated list of a channel's shorts.
 ```
 GET /v1/youtube/channel/shorts/simple?handle={username}
 ```
-Convenience endpoint — auto-paginates to get latest shorts. Costs more credits (makes multiple requests under the hood). For full short details (description, publish date), use the Video/Short Details endpoint on individual results.
+Convenience endpoint — auto-paginates to get latest shorts. Costs more credits (makes multiple requests under the hood) so only use when you need a quick dump of all shorts. For full short details (description, publish date), use the Video/Short Details endpoint on individual results.
 
 ## Search
 
@@ -62,7 +62,7 @@ Get the videos from a YouTube playlist.
 ```
 GET /v1/youtube/video/transcript?video_id={id}
 ```
-Dedicated transcript endpoint. This is separate from the video details endpoint — YouTube changed their API, so transcripts require their own call.
+Dedicated transcript endpoint. This is separate from the video details endpoint — YouTube changed their API, so transcripts require their own call. Unlike TikTok/Instagram transcripts, YouTube transcripts use YouTube's native transcript data and have no duration limit.
 
 ## Notes
 

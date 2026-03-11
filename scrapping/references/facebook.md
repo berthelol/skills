@@ -42,7 +42,7 @@ Dedicated transcript endpoint for Facebook posts/reels. Pass the post URL.
 ```
 GET /v1/facebook/post/comments?url={post_url}&cursor={cursor}
 ```
-Comments on a Facebook post. Tip: passing `feedback_id` instead of URL is significantly faster.
+Comments on a Facebook post. Passing `feedback_id` instead of URL is significantly faster because it skips the URL resolution step — use it when you've already fetched the post and have the `feedback_id` from the response.
 
 ```
 GET /v1/facebook/post/comments?feedback_id={id}&cursor={cursor}
@@ -54,7 +54,7 @@ GET /v1/facebook/post/comments?feedback_id={id}&cursor={cursor}
 ```
 GET /v1/facebook/adLibrary/search/ads?query={company_name}&cursor={cursor}
 ```
-Search the Meta Ad Library. Note the camelCase `adLibrary` in the path.
+Search the Meta Ad Library. Note the camelCase `adLibrary` in the path — this is different from most other endpoints and a common source of 404 errors.
 
 Parameters:
 - `sort_by` — sort by `total_impressions` or `relevancy_monthly_grouped`

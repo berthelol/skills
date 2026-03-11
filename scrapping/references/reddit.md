@@ -16,19 +16,19 @@ Public Reddit user profile data.
 ```
 GET /v1/reddit/subreddit?name={subreddit_name}
 ```
-Details about a subreddit. Also accepts a URL.
+Details about a subreddit: subscriber count, description, rules, and metadata. Also accepts a full subreddit URL. Start here when exploring a new subreddit — the subscriber count and description help gauge relevance before fetching posts.
 
 ### Subreddit Posts
 ```
 GET /v1/reddit/subreddit/posts?name={subreddit_name}&cursor={cursor}
 ```
-Recent posts from a subreddit with engagement metrics.
+Recent posts from a subreddit with engagement metrics (upvotes, comments, awards).
 
 ### Subreddit Search
 ```
 GET /v1/reddit/subreddit/search?name={subreddit_name}&query={keyword}&cursor={cursor}
 ```
-Search within a subreddit for posts, comments, or media matching a query.
+Search within a specific subreddit. More targeted than the global `/v1/reddit/search` — use this when the user already knows which subreddit to look in.
 
 ## Posts & Comments
 
@@ -44,7 +44,7 @@ Comments and post information from a Reddit post.
 ```
 GET /v1/reddit/search?query={keyword}&cursor={cursor}
 ```
-Search Reddit for posts across all subreddits.
+Search Reddit for posts across all subreddits. Use this for broad topic research when you don't know which subreddit has the most relevant content.
 
 ## Ad Library
 
@@ -63,6 +63,6 @@ Details for a specific Reddit ad by ID.
 ## Notes
 
 - Subreddit details accepts both a name and a full URL
-- Reddit ad search is capped at 30 results
+- Reddit ad search is capped at 30 results — this is a Reddit-side limitation
 - Use `trim=true` to reduce response size
 - Use `cursor` for pagination on all paginated endpoints

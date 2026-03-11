@@ -8,13 +8,13 @@ Base path: `/v1/tiktok`
 ```
 GET /v1/tiktok/profile?handle={username}
 ```
-Returns public profile data: bio, follower/following counts, total likes, avatar, verified status.
+Returns public profile data: bio, follower/following counts, total likes, avatar, verified status. Response fields include `statsV2.followerCount`, `statsV2.followingCount`, `statsV2.heartCount` for metrics.
 
 ### Audience Demographics
 ```
 GET /v1/tiktok/user/demographics?handle={username}
 ```
-Returns audience country breakdown. **Costs 26 credits.**
+Returns audience country breakdown. **Costs 26 credits** because it requires heavy computation on the backend — only use when the user specifically needs audience geography data, not for general profile lookups.
 
 ### Followers
 ```
@@ -41,7 +41,7 @@ Response contains `aweme_list` array with video objects. Each video has `statist
 ```
 GET /v1/tiktok/video?video_id={id}
 ```
-Full details for a single video: description, play/like/comment/share counts, music info, hashtags.
+Full details for a single video: description, play/like/comment/share counts, music info, hashtags. Use this when you already have a specific `video_id` and need detailed metadata — it's cheaper than fetching all profile videos when you only need one.
 
 ### Video Transcript
 ```
@@ -65,15 +65,15 @@ Data from a user's current or recent live stream.
 
 ### Search by Keyword
 ```
-GET /v1/tiktok/search?query={keyword}&cursor={cursor}
+GET /v1/tiktok/search/keyword?query={keyword}&cursor={cursor}
 ```
-Search TikTok videos matching a keyword.
+Search TikTok videos matching a keyword. Use this when a user wants to find content about a topic — it returns videos ranked by relevance, which is more useful than browsing hashtags when the user doesn't know the exact tag creators use.
 
 ### Top Search
 ```
 GET /v1/tiktok/search/top?query={keyword}
 ```
-Returns the "Top" search results including photo carousels and videos (regular keyword search only returns videos).
+Returns the "Top" search results including photo carousels and videos. Use this instead of keyword search when you need mixed content types (not just videos) — photo carousels won't appear in regular keyword search results.
 
 ### Search by Hashtag
 ```
@@ -93,7 +93,7 @@ Search for TikTok users.
 ```
 GET /v1/tiktok/videos/popular?period={period}&region={region}
 ```
-Filter trending videos by time period and region.
+Filter trending videos by time period and region. Good for research and analytics — returns curated popular content with engagement data.
 
 ### Popular Creators
 ```
@@ -115,9 +115,9 @@ Trending music on TikTok (30-second previews max).
 
 ### Trending Feed
 ```
-GET /v1/tiktok/trending
+GET /v1/tiktok/get-trending-feed?region={region}
 ```
-The trending feed from TikTok.
+The raw trending feed from TikTok for a specific region. Returns the same content users see on the "For You" trending tab. Use `region=US`, `region=UK`, etc.
 
 ## Music
 

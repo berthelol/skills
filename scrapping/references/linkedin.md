@@ -8,7 +8,7 @@ Base path: `/v1/linkedin`
 ```
 GET /v1/linkedin/profile?handle={username}
 ```
-Public profile data including recent posts. Only returns publicly visible information (what you'd see in incognito mode). Note: work history and job titles may be unavailable due to LinkedIn restrictions.
+Public profile data including recent posts. Only returns publicly visible information (what you'd see in incognito mode). Work history and job titles may be unavailable due to LinkedIn restrictions — set expectations accordingly when a user asks for detailed career history.
 
 ### Company Page
 ```
@@ -20,7 +20,7 @@ Public company page data.
 ```
 GET /v1/linkedin/company/posts?handle={company_slug}&cursor={cursor}
 ```
-Posts from a company page. **Limited to 7 pages total** (LinkedIn restriction).
+Posts from a company page. **Limited to 7 pages total** — this is a LinkedIn-side restriction, not an API limitation. Plan accordingly: you'll get roughly the most recent 70 posts.
 
 ## Posts
 
