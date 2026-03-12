@@ -45,7 +45,8 @@ export SCRAPECREATORS_API_KEY="your-key-here"
 ### Your first request
 
 ```bash
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile?handle=khaby.lame" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile" \
+  --data-urlencode "handle=khaby.lame" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" | jq .
 ```
 
@@ -87,11 +88,14 @@ Many endpoints return paginated results. The pattern is:
 
 ```bash
 # First page
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=khaby.lame" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile/videos" \
+  --data-urlencode "handle=khaby.lame" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" | jq .
 
 # Next page (using cursor from previous response)
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=khaby.lame&cursor=CURSOR_VALUE" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile/videos" \
+  --data-urlencode "handle=khaby.lame" \
+  --data-urlencode "cursor=CURSOR_VALUE" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" | jq .
 ```
 
@@ -114,10 +118,11 @@ Each platform has its own reference file with full endpoint details. Read the re
 
 ## Making requests: the pattern
 
-Every call follows the same shape:
+Every call follows the same shape. Always use `-G` with `--data-urlencode` to safely pass query parameters — this prevents shell injection from user-provided values (handles, search queries, URLs) and properly encodes special characters:
 
 ```bash
-curl -s "https://api.scrapecreators.com/v1/{platform}/{endpoint}?{params}" \
+curl -s -G "https://api.scrapecreators.com/v1/{platform}/{endpoint}" \
+  --data-urlencode "param=value" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY"
 ```
 
@@ -129,16 +134,19 @@ A common pattern is to fetch a profile first (to confirm the account exists and 
 
 ```bash
 # 1. Get profile
-PROFILE=$(curl -s "https://api.scrapecreators.com/v1/tiktok/profile?handle=creator_name" \
+PROFILE=$(curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile" \
+  --data-urlencode "handle=creator_name" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY")
 
 # 2. Get their recent posts
-POSTS=$(curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=creator_name" \
+POSTS=$(curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile/videos" \
+  --data-urlencode "handle=creator_name" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY")
 
 # 3. Get comments on a specific video (extract video ID from posts)
 VIDEO_ID=$(echo "$POSTS" | jq -r '.aweme_list[0].aweme_id')
-COMMENTS=$(curl -s "https://api.scrapecreators.com/v1/tiktok/video/comments?video_id=$VIDEO_ID" \
+COMMENTS=$(curl -s -G "https://api.scrapecreators.com/v1/tiktok/video/comments" \
+  --data-urlencode "video_id=$VIDEO_ID" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY")
 ```
 
@@ -146,11 +154,13 @@ COMMENTS=$(curl -s "https://api.scrapecreators.com/v1/tiktok/video/comments?vide
 
 ```bash
 # Save raw JSON
-curl -s "https://api.scrapecreators.com/v1/instagram/profile?handle=natgeo" \
+curl -s -G "https://api.scrapecreators.com/v1/instagram/profile" \
+  --data-urlencode "handle=natgeo" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" > natgeo_profile.json
 
 # Save as CSV (extract specific fields with jq)
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=creator" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile/videos" \
+  --data-urlencode "handle=creator" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" \
   | jq -r '.aweme_list[] | [.aweme_id, .desc, .statistics.play_count, .statistics.digg_count] | @csv' \
   > creator_posts.csv
@@ -163,7 +173,8 @@ After fetching data, here are common analysis patterns:
 ### Extract key metrics
 ```bash
 # Get engagement stats from a profile
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile?handle=creator" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile" \
+  --data-urlencode "handle=creator" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" \
   | jq '{followers: .statsV2.followerCount, following: .statsV2.followingCount, likes: .statsV2.heartCount}'
 ```
@@ -171,7 +182,8 @@ curl -s "https://api.scrapecreators.com/v1/tiktok/profile?handle=creator" \
 ### Aggregate across posts
 ```bash
 # Average engagement across recent posts
-curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=creator" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/profile/videos" \
+  --data-urlencode "handle=creator" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" \
   | jq '[.aweme_list[] | .statistics.digg_count] | (add / length)'
 ```
@@ -179,14 +191,17 @@ curl -s "https://api.scrapecreators.com/v1/tiktok/profile/videos?handle=creator"
 ### Get video transcripts for content analysis
 ```bash
 # Fetch transcript of a TikTok video
-curl -s "https://api.scrapecreators.com/v1/tiktok/video/transcript?video_id=VIDEO_ID" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/video/transcript" \
+  --data-urlencode "video_id=VIDEO_ID" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" | jq -r '.data.transcript'
 ```
 
 ### Search and filter
 ```bash
 # Find TikTok creators by niche with audience filters
-curl -s "https://api.scrapecreators.com/v1/tiktok/creators/popular?min_followers=100000&audience_country=US" \
+curl -s -G "https://api.scrapecreators.com/v1/tiktok/creators/popular" \
+  --data-urlencode "min_followers=100000" \
+  --data-urlencode "audience_country=US" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY" | jq '.data'
 ```
 
@@ -208,8 +223,9 @@ If a request fails:
 
 ```bash
 # Check status code
-curl -s -o response.json -w "%{http_code}" \
-  "https://api.scrapecreators.com/v1/tiktok/profile?handle=creator" \
+curl -s -G -o response.json -w "%{http_code}" \
+  "https://api.scrapecreators.com/v1/tiktok/profile" \
+  --data-urlencode "handle=creator" \
   -H "x-api-key: $SCRAPECREATORS_API_KEY"
 ```
 
