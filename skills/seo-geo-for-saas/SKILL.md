@@ -8,6 +8,10 @@ description: >
 metadata:
   openclaw:
     requires:
+      env:
+        - GOOGLE_CLIENT_ID
+        - GOOGLE_CLIENT_SECRET
+        - GOOGLE_REFRESH_TOKEN
       bins:
         - curl
         - python3
