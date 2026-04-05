@@ -60,7 +60,7 @@ This skill works with two data providers. During onboarding, ask the user which 
 **Option B: DataForSEO** (recommended if no SemRush)
 - Cheaper, API-first, good enough for most SaaS
 - If the user has the `dataforseo` skill installed, use it directly
-- Setup: `python3 dataforseo_client.py --setup` to configure credentials
+- If the user has an account, help them configure credentials
 
 **Option C: Manual data**
 - User pastes data from Google Search Console, exports, or screenshots
@@ -105,11 +105,7 @@ Use when the user asks to write an article, blog post, or any SEO content.
 5. Run pre-publish checklist (read `references/pre-publish-checklist.md`)
 6. Generate thumbnail if needed (read `references/thumbnail-guide.md`)
 
-**Important:** Before writing ANY article, install and invoke the `seo-geo` skill for validation:
-```
-npx skills add https://github.com/resciencelab/opc-skills --skill seo-geo
-```
-The seo-geo skill handles technical SEO validation, schema markup, AI bot access, and GEO scoring. This skill handles strategy, templates, and the publishing workflow. They complement each other.
+**Important:** Before writing ANY article, invoke the `seo-geo` companion skill for validation (listed in recommended skills above). It handles technical SEO validation, schema markup, AI bot access, and GEO scoring. This skill handles strategy, templates, and the publishing workflow. They complement each other.
 
 For article templates, read `references/templates.md`.
 For the pre-publish checklist, read `references/pre-publish-checklist.md`.
