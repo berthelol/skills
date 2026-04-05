@@ -117,7 +117,7 @@ Run this audit every two weeks to maintain link health across the site:
 
 ## Important Notes
 
-- **ALWAYS** invoke the `seo-geo` skill before writing any article. It validates technical SEO, GEO scoring, AI bot access, and schema markup at a deeper level than this checklist covers.
-- Install it with: `npx skills add https://github.com/resciencelab/opc-skills --skill seo-geo`
+- **ALWAYS** invoke the `seo-geo` companion skill before writing any article. It validates technical SEO, GEO scoring, AI bot access, and schema markup at a deeper level than this checklist covers.
+- The `seo-geo` skill is listed in recommended skills in the main SKILL.md.
 - This checklist is the minimum bar. The `seo-geo` skill adds additional validation on top.
 - When in doubt, re-read this file. When confident, re-read it anyway.

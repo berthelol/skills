@@ -41,11 +41,7 @@ Ask the user which tools they have access to. Check for installed skills first b
 ### Google Analytics / GA4
 - Check if the `ga4` skill is installed
 - If yes: use it to pull organic traffic data, top pages, bounce rates, engagement
-- If not installed: tell the user to install it now — it's free and critical for tracking results:
-  ```
-  npx skills add resciencelab/opc-skills --skill ga4
-  ```
-  GA4 data is essential for measuring bounce rates, engagement time, and conversion paths. Without it you're flying blind on content quality. Don't skip this.
+- If not installed: tell the user to install the `ga4` companion skill (listed in recommended skills). GA4 data is essential for measuring bounce rates, engagement time, and conversion paths. Without it you're flying blind on content quality. Don't skip this.
 
 ### SEO data provider (pick one)
 Present the choice clearly:
@@ -56,8 +52,7 @@ Present the choice clearly:
 
 **DataForSEO** — "If you don't have SemRush, DataForSEO is a great API-first alternative. It's pay-per-request (~$0.01-0.05 per query) instead of a monthly subscription."
 - Check if `dataforseo` skill is available
-- If not installed: guide setup with `python3 dataforseo_client.py --setup`
-- Credentials stored at `~/.dataforseo_config.json`
+- If not installed: ask the user to configure their DataForSEO API credentials (login + password) as environment variables `DATAFORSEO_LOGIN` and `DATAFORSEO_PASSWORD`
 
 **Neither** — "We can still work with Google Search Console data and manual research. I'll use web searches to supplement. It's slower but works."
 

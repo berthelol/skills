@@ -263,7 +263,7 @@ GEO is not a replacement for SEO. They are complementary strategies that reinfor
 
 ## Recommended Companion Skill
 
-For hands-on GEO analysis and schema markup generation, use the `seo-geo` companion skill (from resciencelab, listed in recommended skills in the main SKILL.md).
+For hands-on GEO analysis and schema markup generation, use the `seo-geo` companion skill (listed in recommended skills in the main SKILL.md).
 
 This skill provides:
 - Automated GEO scoring of your content against the Princeton 9 methods.

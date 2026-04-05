@@ -12,9 +12,10 @@ metadata:
         - GOOGLE_CLIENT_ID
         - GOOGLE_CLIENT_SECRET
         - GOOGLE_REFRESH_TOKEN
+        - DATAFORSEO_LOGIN
+        - DATAFORSEO_PASSWORD
       bins:
         - curl
-        - python3
     recommendedSkills:
       - seo-geo
       - ga4
