@@ -48,11 +48,12 @@ All operations use **ES module scripts** (`.mjs` files) with this connection pat
 ```javascript
 import { connect } from "framer-api"
 
+// IMPORTANT: API key is passed as a plain string (2nd argument), NOT as {apiKey: "..."}
 const framer = await connect(process.env.FRAMER_PROJECT_URL, process.env.FRAMER_API_KEY)
 try {
   // ... operations ...
 } finally {
-  framer.disconnect()
+  await framer.disconnect()
 }
 ```
 
@@ -77,11 +78,42 @@ try {
 | Operation | Method | Notes |
 |-----------|--------|-------|
 | List items | `collection.getItems()` | All items with field data |
-| Add/upsert items | `collection.addItems([{slug, fieldData}])` | Create or update by ID |
-| Update item | `item.setAttributes({slug?, fieldData?})` | Partial updates supported |
+| Create items | `collection.addItems([{slug, fieldData}])` | Create new items. Returns `undefined` — re-fetch with `getItems()` to get IDs |
+| Update item fields | `item.setAttributes({ fieldData: { [fieldId]: {type, value} } })` | **MUST wrap in `fieldData:`** — without it, values are silently ignored |
+| Update item slug/draft | `item.setAttributes({ slug: "new", draft: false })` | Slug and draft are set directly (NOT inside fieldData) |
 | Delete item | `item.remove()` | Single item |
 | Bulk delete | `collection.removeItems([itemIds])` | Multiple items |
 | Reorder items | `collection.setItemOrder([itemIds])` | Set display order |
+
+### ⚠️ Critical: How to update CMS item fields
+
+The `setAttributes` method has a **non-obvious API design** — field values MUST be wrapped in a `fieldData` key:
+
+```javascript
+// ✅ CORRECT — fields wrapped in fieldData
+await item.setAttributes({
+  fieldData: {
+    [titleFieldId]: { type: "string", value: "New Title" }
+  }
+})
+
+// ❌ WRONG — silently ignored, no error thrown
+await item.setAttributes({
+  [titleFieldId]: { type: "string", value: "New Title" }
+})
+
+// ❌ WRONG — also silently ignored
+await item.setAttributes({
+  [titleFieldId]: "New Title"
+})
+```
+
+**Partial updates work:** Only specified fields are changed. Other fields are preserved.
+
+**Non-field attributes** (slug, draft) go directly on the object, NOT inside fieldData:
+```javascript
+await item.setAttributes({ slug: "new-slug", draft: false })
+```
 
 ### Field data format
 
