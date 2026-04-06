@@ -13,10 +13,12 @@ Ask the user these questions (adapt based on what you already know from context)
 2. **What does your product do?** One sentence.
 3. **Who's your target customer?** (e.g., "Shopify store owners", "B2B marketing teams")
 4. **What CMS/framework do you use for your blog?**
-   - Framer (use MCP Framer tools if available)
-   - Next.js / Vercel
-   - WordPress
+   - Framer
    - Webflow
+   - WordPress
+   - Notion (as CMS)
+   - Wix
+   - Next.js / Vercel
    - Ghost
    - Other (ask which)
 5. **Do you have existing blog content?** If yes, roughly how many articles?
@@ -56,11 +58,19 @@ Present the choice clearly:
 
 **Neither** — "We can still work with Google Search Console data and manual research. I'll use web searches to supplement. It's slower but works."
 
-### Framer / CMS connection
-- If Framer: check for MCP Framer tools (mcp__claude_ai_Framer_MCP__*)
-- If Next.js: ask for the blog directory path
-- If WordPress: ask for admin URL and REST API access
-- For any CMS: understand the publishing workflow (where do articles go? how are they deployed?)
+### CMS connection
+Based on the user's answer to question 4, adapt accordingly:
+
+- **Framer:** If the `framer-cms` skill is installed, use it to manage CMS content and publish directly. If not installed, recommend the user install the `framer-cms` skill — it enables full CMS management (create/update/delete articles, upload images, publish) via the Framer Server API without opening Framer.
+- **Webflow:** Ask for the Webflow API token and site ID. Use the Webflow CMS API for content management.
+- **WordPress:** Ask for admin URL and REST API access (application password or JWT).
+- **Notion:** Ask for the Notion integration token and database ID. Check if a Notion skill is available.
+- **Wix:** Ask for the Wix API key and site ID.
+- **Next.js / Vercel:** Ask for the blog directory path (e.g., `content/blog/` or `src/posts/`). Articles are markdown/MDX files.
+- **Ghost:** Ask for the Ghost Admin API key and URL.
+- **Other:** Ask about their publishing workflow — where do articles go? How are they deployed?
+
+For any CMS: understand the publishing workflow and whether content can be pushed programmatically or requires manual copy-paste.
 
 ---
 
