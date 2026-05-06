@@ -1,0 +1,13 @@
+# User-supplied assets stay private to each project
+assets/*
+!assets/.gitkeep
+
+# Generated outputs are not version-controlled
+outputs/*
+!outputs/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
