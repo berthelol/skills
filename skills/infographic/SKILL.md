@@ -85,11 +85,13 @@ Identify every brand, tool, or person mentioned in the idea. For each:
    ```
    This is the most reliable logo source. Download with `curl -sL <url> -o assets/<name>.png`.
 
-2. **SVG-only logos**: convert to PNG with `cairosvg`:
+2. **SVG-only logos**: convert to PNG with `cairosvg`. Install inside a virtualenv to avoid touching the system Python:
    ```bash
-   pip3 install cairosvg --break-system-packages --quiet
+   python3 -m venv .venv && source .venv/bin/activate
+   pip install --quiet "openai>=1.0" "cairosvg>=2.7"
    python3 -c "import cairosvg; cairosvg.svg2png(url='in.svg', write_to='out.png', output_width=512)"
    ```
+   If a venv isn't an option, ask the user before falling back to a system-wide install (e.g. `pip install --break-system-packages`) — it can affect their global Python environment.
 
 3. **User avatar**: ask the user once for a photo path; copy into `assets/avatar.png` and reference in `style.json`.
 
@@ -172,6 +174,19 @@ Read both back to confirm they look right.
 - **Outer frame missing** — gpt-image-2 frequently drops the top edge of the outer accent frame. If a clean frame matters, composite it in Figma post-render (5 min job). Don't burn iterations chasing it.
 - **Tiny favicon source** — Google's favicon API sometimes returns a 32px image. The model can still use it as a reference but the rendered logo may look fuzzy. Try `&sz=256` first; if still small, source from the brand's press kit.
 - **Avatar drift** — gpt-image-2 will sometimes alter the avatar photo. If brand consistency matters, composite the real avatar over the rendered output in Figma.
+
+---
+
+## Security notes
+
+This skill writes images, reads reference files, and uploads them to OpenAI. A few things to be deliberate about:
+
+- **API key scoping**: `OPENAI_API_KEY` should be a project-scoped key with a spending limit. Image-2 calls are billable and can run up if the loop misfires.
+- **Reference images stay inside `assets_dir`**: `scripts/generate.py` rejects absolute paths and `..` segments in filenames. Don't try to work around the guard — if you need a logo from elsewhere, copy it into `infographics/assets/` first.
+- **Output names must be bare basenames**: `out_name` is validated for the same reason. Use names like `linear-vs-jira`, never paths.
+- **Prompt files**: when invoking the CLI with `python3 generate.py path/to/prompt.txt …`, treat the prompt file as user-authored. Don't let an upstream agent point this at unrelated local files (the contents will be sent to OpenAI).
+- **Confidential assets**: logos, screenshots, and avatars are uploaded to OpenAI under your account. Don't include private/internal product UI you wouldn't paste into ChatGPT.
+- **Persistent style state**: `infographics/style.json` stores the user's accent color, handle, and avatar path. Treat it as branding metadata only — never store secrets there.
 
 ---
 

@@ -53,6 +53,15 @@ def render(
     if size not in SIZE_MAP:
         raise ValueError(f"size must be one of {list(SIZE_MAP)}, got {size!r}")
 
+    # out_name must be a plain basename. Without this, a caller-controlled
+    # value like "../../tmp/evil" would let the script write the PNG outside
+    # out_dir.
+    name_candidate = Path(out_name)
+    if name_candidate.is_absolute() or ".." in name_candidate.parts or name_candidate.name != out_name:
+        raise ValueError(
+            f"Invalid out_name {out_name!r}: must be a bare filename (no path separators, '..', or absolute paths)."
+        )
+
     api_size = SIZE_MAP[size]
     out_dir = Path(out_dir)
     assets_dir = Path(assets_dir)
