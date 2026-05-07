@@ -63,8 +63,23 @@ def render(
 
     if reference_images:
         files = []
+        assets_root = assets_dir.resolve()
         for fname in reference_images:
-            p = assets_dir / fname
+            # Reject anything that isn't a plain filename inside assets_dir.
+            # pathlib's `/` operator silently resets on an absolute operand
+            # (`Path("assets") / "/etc/passwd"` -> `/etc/passwd`), so without
+            # this guard a prompt-injected caller could exfiltrate arbitrary
+            # files via the OpenAI images.edit upload.
+            candidate = Path(fname)
+            if candidate.is_absolute() or ".." in candidate.parts or candidate.name != fname:
+                raise ValueError(
+                    f"Invalid reference image {fname!r}: must be a bare filename inside assets_dir."
+                )
+            p = (assets_dir / fname).resolve()
+            if assets_root not in p.parents and p != assets_root:
+                raise ValueError(
+                    f"Reference image {fname!r} resolves outside assets_dir ({assets_root})."
+                )
             if not p.exists():
                 raise FileNotFoundError(f"Reference image not found: {p}")
             files.append(open(p, "rb"))
